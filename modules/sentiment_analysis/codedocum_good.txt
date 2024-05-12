@@ -1,0 +1,80 @@
+# This function iterates through a list of items and returns the last item.
+def get_last_item(items):
+    """
+    Retrieves the last item from a list.
+
+    Args:
+        items (list): A list of items.
+
+    Returns:
+        The last item from the list, or None if the list is empty.
+    """
+    result = None
+    # Iterate through the list to find the last item
+    for item in items:
+        result = item
+    return result
+
+# This class represents a product with a name and price.
+class Product:
+    """
+    Represents a product with a name and price.
+    """
+    def __init__(self, name, price):
+        """
+        Initializes the product with a name and price.
+
+        Args:
+            name (str): The name of the product.
+            price (float): The price of the product.
+        """
+        self.name = name
+        self.price = price
+
+    def apply_discount(self, discount_percentage):
+        """
+        Applies a discount to the product price.
+
+        Args:
+            discount_percentage (float): The percentage of discount to apply.
+        """
+        self.price -= (self.price * (discount_percentage / 100))
+
+# This function validates if a number is positive.
+def is_positive(number):
+    """
+    Checks if a number is positive.
+
+    Args:
+        number (int): The number to check.
+
+    Returns:
+        True if the number is positive, False otherwise.
+    """
+    return number > 0
+
+# This class represents a customer with a name and email address.
+class Customer:
+    """
+    Represents a customer with a name and email address.
+    """
+    def __init__(self, name, email):
+        """
+        Initializes the customer with a name and email address.
+
+        Args:
+            name (str): The name of the customer.
+            email (str): The email address of the customer.
+        """
+        self.name = name
+        self.email = email
+
+    def send_email(self, message):
+        """
+        Sends an email to the customer.
+
+        Args:
+            message (str): The message to send.
+        """
+        # Send email implementation
+        pass

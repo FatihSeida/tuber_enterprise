@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Aspect Based Sentiment Analysis</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        .Positive { color: green; }
+        .Negative { color: red; }
+        .Neutral { color: darkblue; }
+        button { margin: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Aspect Based Sentiment Analysis</h1>
+    <input type="text" id="inputText" placeholder="Enter your text here...">
+    <button onclick="sendText()">Analyze Sentiment</button>
+    <div id="result"></div>
+
+    <button onclick="window.location.href='/aspect_based'">Aspect Based Sentiment Analysis</button>
+    <button onclick="window.location.href='/sentiment_analysis'">Sentiment Analysis</button>
+    <button onclick="window.location.href='/regression'">Regression</button>
+    <button onclick="window.location.href='/chatbot_page'">Chatbot</button>
+
+    <script>
+        function sendText() {
+            var text = $('#inputText').val();
+            $.ajax({
+                url: '/predict',  // Adjusted to correct endpoint if needed
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ text: text }),
+                success: function(data) {
+                    $('#result').empty();  // Clear previous results
+                    data.sentiment.forEach(function(sentiment, index) {
+                        var aspect = data.aspect[index];
+                        var element = '<div class="' + sentiment + '">' + aspect + ': ' + sentiment + '</div>';
+                        $('#result').append(element);
+                    });
+                }
+            });
+        }
+    </script>
+</body>
+</html>
