@@ -1,0 +1,101 @@
+{% extends "index.html" %}
+{% block title %}Project Management{% endblock %}
+{% block content %}
+<h3>Project Management Content</h3>
+<p>Welcome to the Project Management page!</p>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Aspect Based Sentiment Analysis</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        .Positive { color: green; }
+        .Negative { color: red; }
+        .Neutral { color: darkblue; }
+        button { margin: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Aspect Based Sentiment Analysis</h1>
+    <input type="text" id="inputText" placeholder="Enter your text here...">
+    <button onclick="sendText()">Analyze Sentiment</button>
+    <div id="result"></div>
+
+    <button onclick="window.location.href='/aspect_based'">Aspect Based Sentiment Analysis</button>
+    <button onclick="window.location.href='/sentiment_analysis'">Sentiment Analysis</button>
+    <button onclick="window.location.href='/regression'">Regression</button>
+    <button onclick="window.location.href='/chatbot_page'">Chatbot</button>
+
+    <script>
+        function sendText() {
+            var text = $('#inputText').val();
+            $.ajax({
+                url: '/predict',  // Adjusted to correct endpoint if needed
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ text: text }),
+                success: function(data) {
+                    $('#result').empty();  // Clear previous results
+                    data.sentiment.forEach(function(sentiment, index) {
+                        var aspect = data.aspect[index];
+                        var element = '<div class="' + sentiment + '">' + aspect + ': ' + sentiment + '</div>';
+                        $('#result').append(element);
+                    });
+                }
+            });
+        }
+    </script>
+</body>
+</html>
+
+<div class="container mt-5">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Project</th>
+                <th>Name</th>
+                <th>Title</th>
+                <th>Acceptance Criteria</th>
+                <th>Priority</th>
+                <th>PIC</th>
+                <th>% Done</th>
+                <th>Dev Flow</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>F1C1 - EOD 01</td>
+                <td>BL19 - EOD 01 Pre EOD Checking</td>
+                <td>EOD 01 Pre EOD Checking</td>
+                <td>batchprocess/Pre_EOD.py</td>
+                <td><span class="priority-critical">Critical</span></td>
+                <td><span class="icon-info">i</span> ikhsan.fanani</td>
+                <td>90%</td>
+                <td><span class="status-in-progress">2In Progress</span></td>
+            </tr>
+            <tr>
+                <td>F1C1 - EOD 01</td>
+                <td>BL20 - EOD 03 CREATE DAILY PORTO</td>
+                <td>EOD 03 CREATE DAILY PORTO</td>
+                <td>batchprocess/EOD_CreateDailyPorto.py</td>
+                <td><span class="priority-critical">Critical</span></td>
+                <td><span class="icon-info">i</span> ikhsan.fanani</td>
+                <td>15%</td>
+                <td><span class="status-in-progress">2In Progress</span></td>
+            </tr>
+            <tr>
+                <td>F1C1 - EOD 01</td>
+                <td>BL21 - EOD 04 JURNAL APPROVAL H+0 NON REDEEM</td>
+                <td>EOD 04 JURNAL APPROVAL H+0 NON REDEEM</td>
+                <td>batchprocess/EOD_CreateGroupJournal_Transact_Non_Redeem.py</td>
+                <td><span class="priority-critical">Critical</span></td>
+                <td><span class="icon-info">i</span> ikhsan.fanani</td>
+                <td>10%</td>
+                <td><span class="status-in-progress">2In Progress</span></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

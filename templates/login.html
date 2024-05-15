@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sosofwerhausan</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #0058a3, #007acc);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        .container {
+            display: flex;
+            justify-content: space-between;
+            width: 80%;
+            max-width: 1200px;
+        }
+        .left {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .right {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .login-box {
+            background-color: white;
+            color: black;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+        .login-box h2 {
+            margin-bottom: 20px;
+            font-weight: normal;
+        }
+        .login-box label {
+            display: block;
+            margin-bottom: 10px;
+        }
+        .login-box input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .login-box button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007acc;
+            border: none;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .login-box button:hover {
+            background-color: #0058a3;
+        }
+        .footer {
+            position: absolute;
+            bottom: 10px;
+            width: 100%;
+            text-align: center;
+            color: white;
+        }
+        .contact-admin {
+            color: #007acc;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="left">
+            <img src="{{ url_for('static', filename='images/profile-picture.png') }}" alt="Profile Picture" width="450">
+            <h1>Developer Dashboard</h1>
+        </div>
+        <div class="right">
+            <div class="login-box">
+                <form method="POST">
+                    <h2>Welcome back, <br>Login</h2>
+                    <label for="user-id">User ID</label>
+                    <input type="text" id="user-id" name="user-id" placeholder="admin">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="*****">
+                    <button type="submit">Login</button>
+                </form>
+                <p>Having trouble logging in? <a href="mailto:admin@sosofwerhausan.com" class="contact-admin">contact admin</a></p>
+            </div>
+        </div>
+    </div>
+    <div class="footer">
+        <p>Copyright © 2024 Sosofwerhausan. All Rights Reserved.</p>
+    </div>
+</body>
+</html>

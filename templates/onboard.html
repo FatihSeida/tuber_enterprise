@@ -1,0 +1,50 @@
+{% extends "index.html" %}
+{% block title %}Onboard{% endblock %}
+{% block content %}
+<h3>Onboard Content</h3>
+<p>Welcome to the Onboard page!</p>
+
+<div class="container">
+    <h2>Chat with Our Chatbot</h2>
+    <div id="chatWindow"></div>
+    <div class="input-group mb-3">
+        <input type="text" id="userInput" class="form-control" placeholder="Type your message here..." aria-label="User's message" aria-describedby="button-addon">
+        <button class="btn btn-outline-secondary" type="button" id="sendBtn">Send</button>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#sendBtn').click(function() {
+            var userInput = $('#userInput').val();
+            if (userInput.trim() != '') {
+                $('#chatWindow').append('<div class="message text-end"><strong>You:</strong> ' + userInput + '</div>');
+                $('#userInput').val('');
+                sendMessageToServer(userInput);
+            }
+        });
+
+        function sendMessageToServer(message) {
+            $.ajax({
+                url: '/chatbot',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ text: message }),
+                success: function(response) {
+                    $('#chatWindow').append('<div class="message text-start"><strong>Chatbot:</strong> ' + response.response + '</div>');
+                    // Auto scroll to the bottom of the chat window
+                    $('#chatWindow').scrollTop($('#chatWindow')[0].scrollHeight);
+                }
+            });
+        }
+
+        // Allow pressing "Enter" to send message
+        $('#userInput').keypress(function(e) {
+            if(e.which == 13) {
+                $('#sendBtn').click();
+            }
+        });
+    });
+</script>
+{% endblock %}
