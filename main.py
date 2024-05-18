@@ -2,11 +2,16 @@ import openai
 import nltk
 import pickle
 import os
+import logging
+import pandas as pd
 
 from flask import Flask, request, jsonify, render_template, url_for, redirect
 from modules.generative_chatbot.open_ai import chat_with_gpt
 from modules.sentiment_analysis.sentiment_analysis import perform_sentiment_analysis
 # from pyabsa import AspectTermExtraction as ATEPC
+
+# Konfigurasi logging
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)s %(message)s')
 
 app = Flask(__name__)
 openai.api_key = 'sk-proj-WlWxxOwxqT9URBV7XqgCT3BlbkFJ6qm9vDs5stEDDUTQ36OA'
@@ -23,6 +28,7 @@ openai.api_key = 'sk-proj-WlWxxOwxqT9URBV7XqgCT3BlbkFJ6qm9vDs5stEDDUTQ36OA'
 models_dir = os.path.join(os.getcwd(), "models")
 regression_path = os.path.join(models_dir, "regression.pkl")
 sentiment_analysis_path = os.path.join(models_dir, "sentiment_analysis.pkl")
+effort_estimator_path = "d:\\Akademik\\Deploy Model\\models\\best_svr_model.pkl"
 
 # Memuat model dan scaler dari file pickle
 with open(regression_path, 'rb') as file:
@@ -35,6 +41,9 @@ scaler_loaded = loaded_items['scaler']
 # Load the sentiment analysis model
 with open(sentiment_analysis_path, 'rb') as file:
     vectorizer, clf = pickle.load(file)
+
+with open(effort_estimator_path, 'rb') as file:
+    best_model = pickle.load(file)
 
 nltk.download('punkt')
 
@@ -61,6 +70,25 @@ nltk.download('punkt')
 #         content = file.read().decode('utf-8')
 #         results = perform_sentiment_analysis(content)
 #         return jsonify(results)
+
+@app.route('/effort-estimator', methods=['POST'])
+def effort_estimator():
+    try:
+        data = request.get_json()
+        logging.debug("Data diterima: %s", data)  # Logging data untuk memastikan formatnya benar
+        
+        columns = ['Length', 'Transactions', 'Entities', 'PointsNonAdjust', 'PointsAjust']
+        df = pd.DataFrame([data], columns=columns)
+        df = df.astype(float)
+        logging.debug("DataFrame untuk prediksi: \n%s", df)  # Logging DataFrame
+
+        prediction = best_model.predict(df)[0]
+        logging.debug("Prediksi: %s", prediction)  # Logging prediksi
+        
+        return jsonify({'Prediction': prediction})
+    except Exception as e:
+        logging.error("Error saat melakukan prediksi: %s", str(e))
+        return jsonify({'error': str(e)}), 500
     
 @app.route("/chatbot", methods=["POST"])
 def chatbot():
@@ -128,6 +156,10 @@ def onboard():
 @app.route('/pitch')
 def pitch():
     return render_template('pitch.html')
+
+@app.route('/software_effort_estimator')
+def software_effort_estimator():
+    return render_template('software_effort_estimator.html')
 
 @app.route('/project_management')
 def project_management():

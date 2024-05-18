@@ -1,0 +1,52 @@
+{% extends "index.html" %}
+{% block title %}Software Effort Estimator{% endblock %}
+{% block content %}
+<h1>Masukkan Data untuk Estimasi Biaya Software</h1>
+<form id="prediction-form" style="max-width: 400px;">
+    <label for="Length">Length:</label>
+    <input type="number" id="Length" name="Length" style="width: 100%;"><br><br>
+    
+    <label for="Transactions">Transactions:</label>
+    <input type="number" id="Transactions" name="Transactions" style="width: 100%;"><br><br>
+    
+    <label for="Entities">Entities:</label>
+    <input type="number" id="Entities" name="Entities" style="width: 100%;"><br><br>
+    
+    <label for="PointsNonAdjust">Points Non-Adjust:</label>
+    <input type="number" id="PointsNonAdjust" name="PointsNonAdjust" style="width: 100%;"><br><br>
+    
+    <label for="PointsAjust">Points Adjust:</label>
+    <input type="number" id="PointsAjust" name="PointsAjust" style="width: 100%;"><br><br>
+    
+    <input type="button" value="Predict" onclick="sendPrediction()" style="width: 100%;">
+</form>
+<h2>Hasil Prediksi: <span id="result"></span></h2>
+
+<script>
+    function sendPrediction() {
+        var formData = {
+            'Length': parseFloat($('#Length').val()),
+            'Transactions': parseFloat($('#Transactions').val()),
+            'Entities': parseFloat($('#Entities').val()),
+            'PointsNonAdjust': parseFloat($('#PointsNonAdjust').val()),
+            'PointsAjust': parseFloat($('#PointsAjust').val())
+        };
+        
+        console.log("Mengirim data:", formData);  // Logging data yang dikirim
+        
+        $.ajax({
+            type: 'POST',
+            url: '/effort-estimator',
+            contentType: 'application/json',
+            data: JSON.stringify(formData),
+            success: function(response) {
+                console.log("Respon diterima:", response);  // Logging respon
+                $('#result').text(response.Prediction);
+            },
+            error: function(error) {
+                console.log("Error:", error);  // Logging error
+            }
+        });
+    }
+</script>
+{% endblock %}
