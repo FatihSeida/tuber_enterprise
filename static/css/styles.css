@@ -1,0 +1,306 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+}
+
+.sidebar {
+    width: 250px;
+    height: 100%;
+    background-color: #0a285f;
+    color: white;
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    padding-top: 20px;
+}
+
+.sidebar h1 {
+    margin: 0 20px;
+    font-size: 24px;
+    padding-bottom: 20px;
+}
+
+.sidebar a {
+    color: white;
+    text-decoration: none;
+    padding: 15px 20px;
+    display: block;
+}
+
+.sidebar a:hover {
+    background-color: #1c3b70;
+}
+
+.sidebar .active {
+    background-color: #1c3b70;
+}
+
+.content {
+    margin-left: 250px;
+
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.header .profile {
+    display: flex;
+    align-items: center;
+}
+
+.header img {
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+}
+
+.header span {
+    font-size: 16px;
+}
+
+#chatWindow {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    height: 400px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+    background-color: white;
+}
+
+.message {
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 10px;
+    max-width: 80%;
+    word-wrap: break-word;
+}
+
+.text-end {
+    background-color: #d1e7dd;
+    text-align: right;
+    align-self: flex-end;
+}
+
+.text-start {
+    background-color: #f8d7da;
+    text-align: left;
+    align-self: flex-start;
+}
+
+.input-section {
+    position: fixed;
+    bottom: 0;
+    width: calc(100% - 250px); /* Adjust width based on sidebar */
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-top: 1px solid #e5e5e5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.input-group {
+    width: 100%;
+    max-width: 800px;
+    display: flex; /* Ensure input and button are on the same line */
+}
+
+.input-group .form-control {
+    flex-grow: 1; /* Make input take available space */
+    padding: 10px;
+    border: none; /* Remove border */
+    box-shadow: none; /* Remove shadow */
+    border-radius: 30px 0 0 30px; /* Rounded corners for left side */
+}
+
+.input-group .form-control:focus {
+    box-shadow: none; /* Remove focus shadow */
+    border-color: transparent; /* Remove focus border */
+}
+
+.input-group-append {
+    flex-shrink: 0; /* Prevent button from shrinking */
+}
+
+.input-group .form-control::placeholder {
+    color: #6c757d;
+    opacity: 1;
+    font-style: italic;
+    font-size: 14px;
+}
+
+.input-group-append .btn {
+    background-color: #0a285f;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 14px;
+    border-radius: 0 30px 30px 0; /* Rounded corners for right side */
+    transition: background-color 0.3s ease;
+    box-shadow: none; /* Remove shadow */
+    display: flex;
+    align-items: center; /* Center button text */
+    justify-content: center; /* Center button text */
+}
+
+
+.input-group-append .btn:hover {
+    background-color: #1c3b70;
+}
+
+.onboard-content {
+    padding-left: 20px;
+    padding-bottom: 60px; /* Ensure content doesn't overlap with the input section */
+}
+
+.loading-indicator {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 16px;
+    color: #0a285f;
+}
+
+.loading-indicator.active {
+    display: block;
+}
+
+
+/* Additional dashboard styles */
+.dashboard-container {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.overview {
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+    gap: 10px;
+}
+
+.phase {
+    display: flex;
+    gap: 10px;
+    flex: 1;
+}
+
+.phase-item {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 15px;
+    background-color: #ffffff;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    font-size: 16px;
+    flex: 1;
+    min-width: 150px;
+}
+
+.phase-item h3 {
+    margin: 0;
+    font-weight: normal;
+}
+
+.phase-item .status {
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 14px;
+    text-align: center;
+}
+
+.phase-item.completed .status {
+    background-color: #28a745;
+    color: white;
+}
+
+.phase-item.in-progress .status {
+    background-color: #ffc107;
+    color: black;
+}
+
+.phase-item.waiting .status {
+    background-color: #17a2b8;
+    color: white;
+}
+
+.launch-date {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background-color: #28a745;
+    color: white;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    flex: 1;
+    min-width: 150px;
+}
+
+.launch-date h3 {
+    margin: 0;
+    font-size: 16px;
+}
+
+.launch-date .date {
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.details {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.details > div {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    flex: 1;
+}
+
+.tasks table, .deadlines table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.tasks table th, .tasks table td, .deadlines table th, .deadlines table td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+.tasks table th, .deadlines table th {
+    background-color: #f4f4f9;
+}
+
+.overdue-1 { color: #ffc107; }
+.overdue-4 { color: #ff851b; }
+.overdue-10 { color: #ff4136; }
+.overdue-24 { color: #b10dc9; }

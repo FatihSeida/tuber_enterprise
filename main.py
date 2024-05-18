@@ -9,6 +9,7 @@ from modules.sentiment_analysis.sentiment_analysis import perform_sentiment_anal
 # from pyabsa import AspectTermExtraction as ATEPC
 
 app = Flask(__name__)
+openai.api_key = 'sk-proj-WlWxxOwxqT9URBV7XqgCT3BlbkFJ6qm9vDs5stEDDUTQ36OA'
 
 # model_to_load = ATEPC.ATEPCModelList.FAST_LCF_ATEPC
 
@@ -63,16 +64,20 @@ nltk.download('punkt')
     
 @app.route("/chatbot", methods=["POST"])
 def chatbot():
-    user_input = request.json['text']
+    data = request.json
+    user_input = data.get('text')
+    
+    if not user_input:
+        return jsonify({'error': 'No text provided'}), 400
+    
     if user_input.lower() == 'quit':
         return jsonify({'response': 'Goodbye!'})
-    else:
-        try:
-            print(user_input)
-            response = chat_with_gpt(user_input)
-            return jsonify({'response': response})
-        except Exception as e:
-            return jsonify({'error': str(e)}), 500
+    
+    try:
+        response = chat_with_gpt(user_input)
+        return jsonify({'response': response})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
     
 @app.route('/predict_regression', methods=['POST'])
 def predict():
@@ -103,14 +108,18 @@ def login():
         user_id = request.form['user-id']
         password = request.form['password']
         if user_id == 'admin' and password == 'admin':
-            return redirect(url_for('dashboard'))
+            return redirect(url_for('index'))
         else:
             return redirect(url_for('login'))
     return render_template('login.html')
 
-@app.route("/dashboard")
-def dashboard():
+@app.route("/index")
+def index():
     return render_template("index.html")
+
+@app.route('/dashboard')
+def dashboard():
+    return render_template('dashboard.html')
 
 @app.route('/onboard')
 def onboard():
@@ -125,4 +134,4 @@ def project_management():
     return render_template('project_management.html')
 
 if __name__ == "__main__":
-    app.run(port=29500, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)

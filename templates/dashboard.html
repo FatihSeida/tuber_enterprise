@@ -1,0 +1,171 @@
+{% extends "index.html" %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="overview">
+        <div class="phase">
+            <div class="phase-item completed">
+                <h3>Planning <i class="fas fa-check-circle"></i></h3>
+                <div class="status completed">Completed</div>
+            </div>
+            <div class="phase-item completed">
+                <h3>Design <i class="fas fa-check-circle"></i></h3>
+                <div class="status completed">Completed</div>
+            </div>
+            <div class="phase-item in-progress">
+                <h3>Development <i class="fas fa-spinner"></i></h3>
+                <div class="status in-progress">67% In Progress</div>
+            </div>
+            <div class="phase-item waiting">
+                <h3>Testing <i class="fas fa-clock"></i></h3>
+                <div class="status waiting">Waiting</div>
+            </div>
+        </div>
+        <div class="launch-date">
+            <h3>Projected Launch Date <i class="fas fa-flag-checkered"></i></h3>
+            <div class="date">107 Days<br>Friday, December 15</div>
+        </div>
+    </div>
+    <div class="details">
+        <div class="budget">
+            <h3>Project Budget</h3>
+            <canvas id="budgetChart"></canvas>
+            <div class="budget-details">
+                <p>Total Budget: <strong>$52,000</strong></p>
+                <p>Remaining: <strong>$8,770</strong></p>
+                <p>Currently: <strong>8.1% Over Target</strong></p>
+            </div>
+        </div>
+        <div class="tasks">
+            <h3>Overdue Tasks</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Overdue</th>
+                        <th>Task</th>
+                        <th>Deadline</th>
+                        <th>Employee</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="overdue-1">1 Day</td>
+                        <td>Update facebook profile</td>
+                        <td>2017-08-15</td>
+                        <td>Paula</td>
+                    </tr>
+                    <tr>
+                        <td class="overdue-4">4 Days</td>
+                        <td>Update testing plan</td>
+                        <td>2017-08-06</td>
+                        <td>Kate</td>
+                    </tr>
+                    <tr>
+                        <td class="overdue-10">10 Days</td>
+                        <td>Configure desktop</td>
+                        <td>2017-08-01</td>
+                        <td>Nancy</td>
+                    </tr>
+                    <tr>
+                        <td class="overdue-24">24 Days</td>
+                        <td>Set up new database</td>
+                        <td>2017-07-18</td>
+                        <td>Georg</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="details">
+        <div class="workload">
+            <h3>Workload</h3>
+            <canvas id="workloadChart"></canvas>
+        </div>
+        <div class="deadlines">
+            <h3>Upcoming Deadlines</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Employee</th>
+                        <th>Task</th>
+                        <th>Deadline</th>
+                        <th>Workload</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Kate</td>
+                        <td>Update twitter profile</td>
+                        <td>2017-08-15</td>
+                        <td>34%</td>
+                    </tr>
+                    <tr>
+                        <td>Georg</td>
+                        <td>E-Commerce Dashboard</td>
+                        <td>2017-08-06</td>
+                        <td>56%</td>
+                    </tr>
+                    <tr>
+                        <td>Nancy</td>
+                        <td>Set up dev environment</td>
+                        <td>2017-08-01</td>
+                        <td>15%</td>
+                    </tr>
+                    <tr>
+                        <td>Paula</td>
+                        <td>Hire Data Scientist</td>
+                        <td>2017-07-18</td>
+                        <td>11%</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Chart.js: Budget Chart
+    const ctxBudget = document.getElementById('budgetChart').getContext('2d');
+    const budgetChart = new Chart(ctxBudget, {
+        type: 'bar',
+        data: {
+            labels: ['Total Budget', 'Budget Used', 'Target Used'],
+            datasets: [{
+                label: 'Budget',
+                data: [52000, 43230, 46500],
+                backgroundColor: ['#28a745', '#000000', '#6c757d']
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // Chart.js: Workload Chart
+    const ctxWorkload = document.getElementById('workloadChart').getContext('2d');
+    const workloadChart = new Chart(ctxWorkload, {
+        type: 'bar',
+        data: {
+            labels: ['Georg', 'Nancy', 'Richard', 'Kate', 'Paula'],
+            datasets: [{
+                label: 'Workload',
+                data: [67, 55, 48, 45, 30],
+                backgroundColor: '#28a745'
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}
