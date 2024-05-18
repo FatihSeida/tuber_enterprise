@@ -17,7 +17,9 @@ app = Flask(__name__)
 # model_to_load.eval()
 
 # Definisikan path absolut ke folder models
-models_dir = r"D:\Akademik\Deploy Model\models"
+# models_dir = r"D:\Akademik\Deploy Model\models"
+# relative path
+models_dir = os.path.join(os.getcwd(), "models")
 regression_path = os.path.join(models_dir, "regression.pkl")
 sentiment_analysis_path = os.path.join(models_dir, "sentiment_analysis.pkl")
 
@@ -66,6 +68,7 @@ def chatbot():
         return jsonify({'response': 'Goodbye!'})
     else:
         try:
+            print(user_input)
             response = chat_with_gpt(user_input)
             return jsonify({'response': response})
         except Exception as e:
