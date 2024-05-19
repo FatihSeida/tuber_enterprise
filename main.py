@@ -6,6 +6,7 @@ import logging
 import pandas as pd
 
 from flask import Flask, request, jsonify, render_template, url_for, redirect
+from flask_cors import CORS
 from modules.generative_chatbot.open_ai_onboard import chat_with_gpt_onboard
 from modules.generative_chatbot.open_ai_pitch import chat_with_gpt_pitch
 # from pyabsa import AspectTermExtraction as ATEPC
@@ -14,6 +15,7 @@ from modules.generative_chatbot.open_ai_pitch import chat_with_gpt_pitch
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)s %(message)s')
 
 app = Flask(__name__)
+CORS(app)
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 # model_to_load = ATEPC.ATEPCModelList.FAST_LCF_ATEPC
@@ -26,25 +28,13 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 # models_dir = r"D:\Akademik\Deploy Model\models"
 # relative path
 models_dir = os.path.join(os.getcwd(), "models")
-regression_path = os.path.join(models_dir, "regression.pkl")
-sentiment_analysis_path = os.path.join(models_dir, "sentiment_analysis.pkl")
+# sentiment_analysis_path = os.path.join(models_dir, "sentiment_analysis.pkl")
 # effort_estimator_path = "d:\\Akademik\\Deploy Model\\models\\best_svr_model.pkl"
 effort_estimator_path = os.path.join(models_dir, "best_svr_model.pkl")
 
-# Memuat model dan scaler dari file pickle
-with open(regression_path, 'rb') as file:
-    loaded_items = pickle.load(file)
-
-# Mengakses model dan scaler yang telah dimuat
-model_rf_loaded = loaded_items['model']
-scaler_loaded = loaded_items['scaler']
-
 # Load the sentiment analysis model
-with open(sentiment_analysis_path, 'rb') as file:
-    vectorizer, clf = pickle.load(file)
-
 with open(effort_estimator_path, 'rb') as file:
-    best_model = pickle.load(file)
+    effort_estimator_model = pickle.load(file)
 
 nltk.download('punkt')
 
@@ -83,7 +73,7 @@ def effort_estimator():
         df = df.astype(float)
         logging.debug("DataFrame untuk prediksi: \n%s", df)  # Logging DataFrame
 
-        prediction = best_model.predict(df)[0]
+        prediction = effort_estimator_model.predict(df)[0]
         logging.debug("Prediksi: %s", prediction)  # Logging prediksi
         
         return jsonify({'Prediction': prediction})
