@@ -1,33 +1,247 @@
 {% extends "index.html" %}
 {% block title %}Pitch{% endblock %}
 {% block content %}
-<h3>Pitch Content</h3>
-<p>Welcome to the Pitch page!</p>
-
-<div class="container">
-    <h2>Chat with Our Chatbot</h2>
-    <div id="chatWindow"></div>
-    <div class="input-group mb-3">
-        <input type="text" id="userInput" class="form-control" placeholder="Type your message here..." aria-label="User's message" aria-describedby="button-addon">
-        <button class="btn btn-outline-secondary" type="button" id="sendBtn">Send</button>
-    </div>
-</div>
-
-<div class="container mt-5">
-    <h1>Predictive Model for Year</h1>
-    <form id="regressionForm">
-        <div class="form-group">
-            <label for="yearInput">Enter Year:</label>
-            <input type="number" class="form-control" id="yearInput" placeholder="Enter year" required>
+<style>
+    .container-pitch {
+      margin: 20px;
+    }
+    .container-pred {
+      padding-bottom: 50px;
+    }
+    #predictionResult {
+      padding-top: 20px;
+    }
+</style>
+<div class="container-pitch">
+    <h3>Pitch Content</h3>
+    <p>Welcome to the Pitch page!</p>
+    <div class="container">
+        <h2>Chat with Our Chatbot</h2>
+        <div id="chatWindow"></div>
+        <div class="input-group mb-3">
+            <input type="text" id="userInput" class="form-control" placeholder="Type your message here..." aria-label="User's message" aria-describedby="button-addon">
+            <div class="input-group-append">
+                <button class="btn btn-primary" type="button" id="sendBtn">Send</button>
+            </div>
         </div>
-        <button type="button" class="btn btn-primary" onclick="predict()">Submit</button>
-    </form>
-    <div id="predictionResult" class="mt-3"></div>
+    </div>
+
+    <div class="container-pred mt-5 mb-3">
+        <h2>Predictive Model for Programming Language Popularity</h2>
+        <form id="regressionForm">
+            <div class="form-group">
+                <label for="progLang">Select Programming Language:</label>
+                <select class="form-control" id="progLang" required>
+                    <option value="PLpgSQL">PLpgSQL</option>
+                    <option value="OCaml">OCaml</option>
+                    <option value="Scheme">Scheme</option>
+                    <option value="Inno Setup">Inno Setup</option>
+                    <option value="Ada">Ada</option>
+                    <option value="Emacs Lisp">Emacs Lisp</option>
+                    <option value="Pascal">Pascal</option>
+                    <option value="NSIS">NSIS</option>
+                    <option value="Ceylon">Ceylon</option>
+                    <option value="Prolog">Prolog</option>
+                    <option value="Common Lisp">Common Lisp</option>
+                    <option value="C++">C++</option>
+                    <option value="TeX">TeX</option>
+                    <option value="Brightscript">Brightscript</option>
+                    <option value="Apex">Apex</option>
+                    <option value="RobotFramework">RobotFramework</option>
+                    <option value="UnrealScript">UnrealScript</option>
+                    <option value="Go">Go</option>
+                    <option value="Racket">Racket</option>
+                    <option value="SWIG">SWIG</option>
+                    <option value="Nix">Nix</option>
+                    <option value="API Blueprint">API Blueprint</option>
+                    <option value="Nim">Nim</option>
+                    <option value="SystemVerilog">SystemVerilog</option>
+                    <option value="Mako">Mako</option>
+                    <option value="QML">QML</option>
+                    <option value="CMake">CMake</option>
+                    <option value="GDScript">GDScript</option>
+                    <option value="Python">Python</option>
+                    <option value="CSS">CSS</option>
+                    <option value="Clojure">Clojure</option>
+                    <option value="ASP">ASP</option>
+                    <option value="Elixir">Elixir</option>
+                    <option value="Jinja">Jinja</option>
+                    <option value="Processing">Processing</option>
+                    <option value="Gherkin">Gherkin</option>
+                    <option value="Dockerfile">Dockerfile</option>
+                    <option value="Dart">Dart</option>
+                    <option value="Makefile">Makefile</option>
+                    <option value="Shell">Shell</option>
+                    <option value="Objective-C++">Objective-C++</option>
+                    <option value="Haxe">Haxe</option>
+                    <option value="Assembly">Assembly</option>
+                    <option value="Cuda">Cuda</option>
+                    <option value="SCSS">SCSS</option>
+                    <option value="Rich Text Format">Rich Text Format</option>
+                    <option value="Perl">Perl</option>
+                    <option value="TypeScript">TypeScript</option>
+                    <option value="Smalltalk">Smalltalk</option>
+                    <option value="C#">C#</option>
+                    <option value="Pawn">Pawn</option>
+                    <option value="Vue">Vue</option>
+                    <option value="Visual Basic">Visual Basic</option>
+                    <option value="Rust">Rust</option>
+                    <option value="FreeMarker">FreeMarker</option>
+                    <option value="VimL">VimL</option>
+                    <option value="PureScript">PureScript</option>
+                    <option value="Erlang">Erlang</option>
+                    <option value="Batchfile">Batchfile</option>
+                    <option value="Ragel in Ruby Host">Ragel in Ruby Host</option>
+                    <option value="R">R</option>
+                    <option value="Eagle">Eagle</option>
+                    <option value="TSQL">TSQL</option>
+                    <option value="Logos">Logos</option>
+                    <option value="Mathematica">Mathematica</option>
+                    <option value="Hack">Hack</option>
+                    <option value="Java">Java</option>
+                    <option value="Elm">Elm</option>
+                    <option value="HTML">HTML</option>
+                    <option value="ABAP">ABAP</option>
+                    <option value="Kotlin">Kotlin</option>
+                    <option value="Crystal">Crystal</option>
+                    <option value="SQF">SQF</option>
+                    <option value="Smarty">Smarty</option>
+                    <option value="Xtend">Xtend</option>
+                    <option value="SQLPL">SQLPL</option>
+                    <option value="Haskell">Haskell</option>
+                    <option value="Factor">Factor</option>
+                    <option value="PHP">PHP</option>
+                    <option value="ooc">ooc</option>
+                    <option value="KiCad">KiCad</option>
+                    <option value="Lua">Lua</option>
+                    <option value="Nunjucks">Nunjucks</option>
+                    <option value="Max">Max</option>
+                    <option value="Thrift">Thrift</option>
+                    <option value="GLSL">GLSL</option>
+                    <option value="AutoIt">AutoIt</option>
+                    <option value="PowerShell">PowerShell</option>
+                    <option value="Arduino">Arduino</option>
+                    <option value="VHDL">VHDL</option>
+                    <option value="Tcl">Tcl</option>
+                    <option value="Jupyter Notebook">Jupyter Notebook</option>
+                    <option value="xBase">xBase</option>
+                    <option value="AutoHotkey">AutoHotkey</option>
+                    <option value="SaltStack">SaltStack</option>
+                    <option value="Verilog">Verilog</option>
+                    <option value="CodeQL">CodeQL</option>
+                    <option value="Nginx">Nginx</option>
+                    <option value="Scala">Scala</option>
+                    <option value="HCL">HCL</option>
+                    <option value="Vala">Vala</option>
+                    <option value="Swift">Swift</option>
+                    <option value="Matlab">Matlab</option>
+                    <option value="Roff">Roff</option>
+                    <option value="PostScript">PostScript</option>
+                    <option value="Jsonnet">Jsonnet</option>
+                    <option value="Perl 6">Perl 6</option>
+                    <option value="DM">DM</option>
+                    <option value="LiveScript">LiveScript</option>
+                    <option value="Uno">Uno</option>
+                    <option value="Vim script">Vim script</option>
+                    <option value="YAML">YAML</option>
+                    <option value="Fortran">Fortran</option>
+                    <option value="ZenScript">ZenScript</option>
+                    <option value="LabVIEW">LabVIEW</option>
+                    <option value="Rascal">Rascal</option>
+                    <option value="Julia">Julia</option>
+                    <option value="PLSQL">PLSQL</option>
+                    <option value="OpenEdge ABL">OpenEdge ABL</option>
+                    <option value="SourcePawn">SourcePawn</option>
+                    <option value="Web Ontology Language">Web Ontology Language</option>
+                    <option value="Groovy">Groovy</option>
+                    <option value="CoffeeScript">CoffeeScript</option>
+                    <option value="Protocol Buffer">Protocol Buffer</option>
+                    <option value="Raku">Raku</option>
+                    <option value="XSLT">XSLT</option>
+                    <option value="JavaScript">JavaScript</option>
+                    <option value="F*">F*</option>
+                    <option value="F#">F#</option>
+                    <option value="ColdFusion">ColdFusion</option>
+                    <option value="ApacheConf">ApacheConf</option>
+                    <option value="BitBake">BitBake</option>
+                    <option value="Starlark">Starlark</option>
+                    <option value="Eiffel">Eiffel</option>
+                    <option value="M">M</option>
+                    <option value="Forth">Forth</option>
+                    <option value="Coq">Coq</option>
+                    <option value="Puppet">Puppet</option>
+                    <option value="C">C</option>
+                    <option value="Visual Basic .NET">Visual Basic .NET</option>
+                    <option value="D">D</option>
+                    <option value="Objective-J">Objective-J</option>
+                    <option value="Objective-C">Objective-C</option>
+                    <option value="Standard ML">Standard ML</option>
+                    <option value="Ruby">Ruby</option>
+                    <option value="ActionScript">ActionScript</option>
+                    <option value="Reason">Reason</option>
+                    <option value="AGS Script">AGS Script</option>
+                    <option value="1C Enterprise">1C Enterprise</option>
+                    <option value="Inform 7">Inform 7</option>
+                    <option value="Stata">Stata</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="datepicker">Select Date:</label>
+                <input type="text" class="form-control" id="datepicker" placeholder="Select date" required>
+                <input type="hidden" id="yearInput">
+                <input type="hidden" id="quarterInput">
+            </div>
+            <button type="button" class="btn-btn-primary" onclick="predict()">Submit</button>
+        </form>
+        <div id="predictionResult" class="mt-3"></div>
+    </div>
+    <div class="loading-indicator" id="loadingIndicator">Sending...</div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <script>
     $(document).ready(function() {
+
+        function parseMarkdown(response) {
+            // Convert Markdown headers to HTML headers
+            response = response.replace(/### (.*?)(?:\r\n|\r|\n)/g, '<h3>$1</h3>');
+            response = response.replace(/#### (.*?)(?:\r\n|\r|\n)/g, '<h4>$1</h4>');
+
+            // Convert Markdown bold text to HTML bold text
+            response = response.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+            // Convert Markdown list items to HTML list items
+            response = response.replace(/- (.*?)(?:\r\n|\r|\n)/g, '<li>$1</li>');
+            response = response.replace(/<\/li><li>/g, '</li><li>'); // Correct list formatting
+
+            // Wrap list items with unordered list tag
+            response = response.replace(/<\/li>/g, '</li></ul>').replace(/<li>/g, '<ul><li>');
+
+            // Convert Markdown images to HTML images
+            response = response.replace(/\*\*Visual\*\*:(.*?)(?:\r\n|\r|\n)/g, '<img src="$1">');
+
+            // Convert Markdown links to HTML links
+            response = response.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2">$1</a>');
+            response = response.replace(/(?:\r\n|\r|\n)/g, '<br>');
+
+            return response;
+        }
+
+        $('#datepicker').datepicker({
+            dateFormat: 'yy-mm-dd',
+            onSelect: function(dateText) {
+                var date = new Date(dateText);
+                var year = date.getFullYear();
+                var month = date.getMonth() + 1;
+                var quarter = Math.ceil(month / 3);
+                console.log(year, quarter);
+                $('#yearInput').val(year);
+                $('#quarterInput').val(quarter);
+            }
+        });
+
         $('#sendBtn').click(function() {
             var userInput = $('#userInput').val();
             if (userInput.trim() != '') {
@@ -38,15 +252,22 @@
         });
 
         function sendMessageToServer(message) {
+            $('#loadingIndicator').addClass('active');
             $.ajax({
-                url: '/chatbot',
+                url: '/chatbot_pitch',
                 method: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({ text: message }),
                 success: function(response) {
-                    $('#chatWindow').append('<div class="message text-start"><strong>Chatbot:</strong> ' + response.response + '</div>');
+                    var styledResponse = parseMarkdown(response.response);
+                    $('#chatWindow').append('<div class="message text-start"><strong>Chatbot:</strong> ' + styledResponse + '</div>');
                     // Auto scroll to the bottom of the chat window
                     $('#chatWindow').scrollTop($('#chatWindow')[0].scrollHeight);
+                    $('#loadingIndicator').removeClass('active');
+                },
+                error: function(xhr, status, error) {
+                    $('#chatWindow').append('<div class="message text-start text-danger"><strong>Error:</strong> ' + xhr.responseText + '</div>');
+                    $('#loadingIndicator').removeClass('active');
                 }
             });
         }
@@ -60,14 +281,16 @@
     });
 
     function predict() {
+        var progLang = $('#progLang').val();
         var year = $('#yearInput').val();
+        var quarter = $('#quarterInput').val();
         $.ajax({
             url: '/predict_regression', // Flask endpoint
             method: 'POST',
             contentType: 'application/json',
-            data: JSON.stringify({ year: year }),
+            data: JSON.stringify({ progLang: progLang, year: year, quarter: quarter }),
             success: function(response) {
-                $('#predictionResult').html('<strong>Prediction:</strong> ' + response.prediction);
+                $('#predictionResult').html('<strong>Prediction:</strong> ' + response.prediction + ' issues');
             }
         });
     }

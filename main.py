@@ -6,15 +6,15 @@ import logging
 import pandas as pd
 
 from flask import Flask, request, jsonify, render_template, url_for, redirect
-from modules.generative_chatbot.open_ai import chat_with_gpt
-from modules.sentiment_analysis.sentiment_analysis import perform_sentiment_analysis
+from modules.generative_chatbot.open_ai_onboard import chat_with_gpt_onboard
+from modules.generative_chatbot.open_ai_pitch import chat_with_gpt_pitch
 # from pyabsa import AspectTermExtraction as ATEPC
 
 # Konfigurasi logging
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)s %(message)s')
 
 app = Flask(__name__)
-openai.api_key = 'sk-proj-WlWxxOwxqT9URBV7XqgCT3BlbkFJ6qm9vDs5stEDDUTQ36OA'
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 # model_to_load = ATEPC.ATEPCModelList.FAST_LCF_ATEPC
 
@@ -28,7 +28,8 @@ openai.api_key = 'sk-proj-WlWxxOwxqT9URBV7XqgCT3BlbkFJ6qm9vDs5stEDDUTQ36OA'
 models_dir = os.path.join(os.getcwd(), "models")
 regression_path = os.path.join(models_dir, "regression.pkl")
 sentiment_analysis_path = os.path.join(models_dir, "sentiment_analysis.pkl")
-effort_estimator_path = "d:\\Akademik\\Deploy Model\\models\\best_svr_model.pkl"
+# effort_estimator_path = "d:\\Akademik\\Deploy Model\\models\\best_svr_model.pkl"
+effort_estimator_path = os.path.join(models_dir, "best_svr_model.pkl")
 
 # Memuat model dan scaler dari file pickle
 with open(regression_path, 'rb') as file:
@@ -90,8 +91,8 @@ def effort_estimator():
         logging.error("Error saat melakukan prediksi: %s", str(e))
         return jsonify({'error': str(e)}), 500
     
-@app.route("/chatbot", methods=["POST"])
-def chatbot():
+@app.route("/chatbot_onbarding", methods=["POST"])
+def chatbot_onbarding():
     data = request.json
     user_input = data.get('text')
     
@@ -102,7 +103,24 @@ def chatbot():
         return jsonify({'response': 'Goodbye!'})
     
     try:
-        response = chat_with_gpt(user_input)
+        response = chat_with_gpt_onboard(user_input)
+        return jsonify({'response': response})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    
+@app.route("/chatbot_pitch", methods=["POST"])
+def chatbot_pitch():
+    data = request.json
+    user_input = data.get('text')
+    
+    if not user_input:
+        return jsonify({'error': 'No text provided'}), 400
+    
+    if user_input.lower() == 'quit':
+        return jsonify({'response': 'Goodbye!'})
+    
+    try:
+        response = chat_with_gpt_pitch(user_input)
         return jsonify({'response': response})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -111,7 +129,8 @@ def chatbot():
 def predict():
     data = request.json
     year = data['year']
-    proglang = data['programmingLanguage']
+    quarter = data['quarter']
+    proglang = data['progLang']
 
     # Load the serialized model based on the programming language
     model_path = os.path.join('models', proglang, f'{proglang}_model.pkl')
@@ -124,9 +143,10 @@ def predict():
     scaler = model_info['scaler']
 
     # Perform the same preprocessing on input data
-    year_scaled = scaler.transform([[year]])
-    # Make prediction
-    prediction = model.predict(year_scaled)[0]
+    input_data = pd.DataFrame([[year, quarter]], columns=['year', 'quarter'])
+    input_scaled = scaler.transform(input_data)
+
+    prediction = model.predict(input_scaled)[0]
     return jsonify({'prediction': prediction})
 
 
@@ -166,4 +186,4 @@ def project_management():
     return render_template('project_management.html')
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=3000, debug=True)

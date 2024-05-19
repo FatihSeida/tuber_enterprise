@@ -88,13 +88,13 @@ body, html {
 }
 
 .text-end {
-    background-color: #d1e7dd;
+    background-color: #e4e6ea;
     text-align: right;
     align-self: flex-end;
 }
 
 .text-start {
-    background-color: #f8d7da;
+    background-color: #B4BED2;
     text-align: left;
     align-self: flex-start;
 }
@@ -304,3 +304,19 @@ body, html {
 .overdue-4 { color: #ff851b; }
 .overdue-10 { color: #ff4136; }
 .overdue-24 { color: #b10dc9; }
+
+.btn-btn-primary {
+    background-color: #0a285f;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 14px;
+    border-radius: 5px;
+}
+
+.form-control {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
