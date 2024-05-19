@@ -8,7 +8,7 @@ import pandas as pd
 from flask import Flask, request, jsonify, render_template, url_for, redirect
 from modules.generative_chatbot.open_ai import chat_with_gpt
 from modules.sentiment_analysis.sentiment_analysis import perform_sentiment_analysis
-# from pyabsa import AspectTermExtraction as ATEPC
+from pyabsa import AspectTermExtraction as ATEPC
 
 # Konfigurasi logging
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)s %(message)s')
@@ -47,17 +47,19 @@ with open(effort_estimator_path, 'rb') as file:
 
 nltk.download('punkt')
 
-# @app.route("/predict_absa", methods=["POST"])
-# def predict():
+@app.route("/predict_absa", methods=["POST"])
+def predict_absa():
+    # Load the model
+    triplet_extractor = ATEPC.AspectExtractor("multilingual")
 
-#     # Get the text from the request
-#     data = request.get_json(force=True)
-#     text = data["text"]
+    # Get the text from the request
+    data = request.get_json(force=True)
+    text = data["text"]
 
-#     # Predict
-#     result = model_to_load.predict(text)
+    # Predict
+    result = triplet_extractor.predict(text, save_result=False)
 
-#     return jsonify(result)
+    return jsonify(result)
 
 # @app.route('/analyze_sentiment', methods=['POST'])
 # def analyze_sentiment():

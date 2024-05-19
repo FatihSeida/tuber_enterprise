@@ -31,7 +31,7 @@
         function sendText() {
             var text = $('#inputText').val();
             $.ajax({
-                url: '/predict',  // Adjusted to correct endpoint if needed
+                url: '/predict_absa',  // Adjusted to correct endpoint if needed
                 method: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({ text: text }),
