@@ -290,6 +290,7 @@
             contentType: 'application/json',
             data: JSON.stringify({ progLang: progLang, year: year, quarter: quarter }),
             success: function(response) {
+                console.log(response);
                 $('#predictionResult').html('<strong>Prediction:</strong> ' + response.prediction + ' issues');
             }
         });
