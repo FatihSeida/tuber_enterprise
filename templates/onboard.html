@@ -26,6 +26,25 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+    function parseMarkdown(response) {
+        // Convert Markdown headers to HTML headers
+        response = response.replace(/### (.*?)(?:\r\n|\r|\n)/g, '<h3>$1</h3>');
+        response = response.replace(/#### (.*?)(?:\r\n|\r|\n)/g, '<h4>$1</h4>');
+        // Convert Markdown bold text to HTML bold text
+        response = response.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        // Convert Markdown list items to HTML list items
+        response = response.replace(/- (.*?)(?:\r\n|\r|\n)/g, '<li>$1</li>');
+        response = response.replace(/<\/li><li>/g, '</li><li>'); // Correct list formatting
+        // Wrap list items with unordered list tag
+        response = response.replace(/<\/li>/g, '</li></ul>').replace(/<li>/g, '<ul><li>');
+        // Convert Markdown images to HTML images
+        response = response.replace(/\*\*Visual\*\*:(.*?)(?:\r\n|\r|\n)/g, '<img src="$1">');
+        // Convert Markdown links to HTML links
+        response = response.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2">$1</a>');
+        response = response.replace(/(?:\r\n|\r|\n)/g, '<br>');
+        return response;
+    }
+
     $(document).ready(function() {
         $('#sendBtn').click(function() {
             sendMessage();
@@ -39,8 +58,8 @@
         });
 
         function sendMessage() {
-            var userInput = $('#userInput').val().trim();
-            if (userInput !== '') {
+            var userInput = $('#userInput').val();
+            if (userInput.trim() != '') {
                 $('#chatWindow').append('<div class="message text-end"><strong>You:</strong> ' + userInput + '</div>');
                 $('#userInput').val('');
                 sendMessageToServer(userInput);
@@ -50,12 +69,15 @@
         function sendMessageToServer(message) {
             $('#loadingIndicator').addClass('active');
             $.ajax({
-                url: '/chatbot',
+                url: '/chatbot_onbarding',
                 method: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({ text: message }),
                 success: function(response) {
-                    $('#chatWindow').append('<div class="message text-start"><strong>Chatbot:</strong> ' + response.response + '</div>');
+                    console.log("response", response);
+                    var styledResponse = parseMarkdown(response.response);
+                    $('#chatWindow').append('<div class="message text-start"><strong>Chatbot:</strong> ' + styledResponse + '</div>');
+                    // Auto scroll to the bottom of the chat window
                     $('#chatWindow').scrollTop($('#chatWindow')[0].scrollHeight);
                     $('#loadingIndicator').removeClass('active');
                 },

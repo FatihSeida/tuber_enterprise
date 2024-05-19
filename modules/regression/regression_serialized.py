@@ -4,7 +4,9 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 import pickle
+from pathlib import Path
 
+# Load the dataset
 df = pd.read_csv('issues.csv')
 
 # Get unique programming languages
@@ -23,12 +25,15 @@ for proglang in unique_proglangs:
         continue
 
     # Extract features and target variable
-    X = df_filtered[['year']]
+    X = df_filtered[['year', 'quarter']]
     y = df_filtered['count']
 
     # Train-test split
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, shuffle=False)
 
+    X_train.columns = ['year', 'quarter']
+    X_test.columns = ['year', 'quarter']
+    
     # Feature scaling
     scaler = StandardScaler()
     X_train_scaled = scaler.fit_transform(X_train)
@@ -42,8 +47,9 @@ for proglang in unique_proglangs:
     models[proglang] = {'model': model_rf, 'scaler': scaler}
 
 # Serialize models
+parent_dir = str(Path(__file__).resolve().parents[2])
 for proglang, model_info in models.items():
-    model_folder = os.path.join('models', proglang)
+    model_folder = os.path.join(parent_dir, 'models', proglang)
     os.makedirs(model_folder, exist_ok=True)
     model_path = os.path.join(model_folder, f'{proglang}_model.pkl')
     with open(model_path, 'wb') as f:

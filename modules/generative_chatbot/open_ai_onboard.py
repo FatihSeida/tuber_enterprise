@@ -240,10 +240,10 @@ JavaScript Fetch API: For making asynchronous requests from the frontend.
 PDFKit: For generating PDF reports from HTML.
 """
 
-def chat_with_gpt(prompt, model="gpt-4-turbo"):
+def chat_with_gpt_onboard(prompt, model="gpt-4-turbo"):
     full_prompt = f"{project_doc}\n\nQuestion: {prompt}"
     client = OpenAI(
-        api_key="sk-proj-WlWxxOwxqT9URBV7XqgCT3BlbkFJ6qm9vDs5stEDDUTQ36OA",
+        api_key=os.getenv("OPENAI_API_KEY"),
     )
     try:
         response = client.chat.completions.create(
