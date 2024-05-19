@@ -2,6 +2,7 @@ import openai
 import nltk
 import pickle
 import os
+import tempfile
 import logging
 import pandas as pd
 
@@ -17,20 +18,10 @@ logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)s %(mes
 app = Flask(__name__)
 CORS(app)
 openai.api_key = os.getenv("OPENAI_API_KEY")
-
-# model_to_load = ATEPC.ATEPCModelList.FAST_LCF_ATEPC
-
-# model_to_load.load_state_dict(self=model_to_load, state_dict=torch.load('D:\\Akademik\\Deploy Model\\checkpoints\\fast_lcf_atepc_100.CustomDataset_cdw_apcacc_80.32_apcf1_79.94_atef1_67.85\\fast_lcf_atepc.state_dict'))
-
-# model_to_load.eval()
-
-# Definisikan path absolut ke folder models
-# models_dir = r"D:\Akademik\Deploy Model\models"
-# relative path
 models_dir = os.path.join(os.getcwd(), "models")
-# sentiment_analysis_path = os.path.join(models_dir, "sentiment_analysis.pkl")
-# effort_estimator_path = "d:\\Akademik\\Deploy Model\\models\\best_svr_model.pkl"
 effort_estimator_path = os.path.join(models_dir, "best_svr_model.pkl")
+# Load the ATEPC model
+triplet_extractor = ATEPC.AspectExtractor("multilingual")
 
 # Load the sentiment analysis model
 with open(effort_estimator_path, 'rb') as file:
@@ -38,19 +29,43 @@ with open(effort_estimator_path, 'rb') as file:
 
 nltk.download('punkt')
 
-@app.route("/predict_absa", methods=["POST"])
-def predict_absa():
-    # Load the model
-    triplet_extractor = ATEPC.AspectExtractor("multilingual")
+@app.route("/upload_csv", methods=["POST"])
+def upload_csv():
+    if 'csvFile' not in request.files:
+        return jsonify({'error': 'No file part'}), 400
+    
+    file = request.files['csvFile']
+    if file.filename == '':
+        return jsonify({'error': 'No selected file'}), 400
+    
+    if file:
+        # Use a temporary directory
+        with tempfile.TemporaryDirectory() as temp_dir:
+            file_path = os.path.join(temp_dir, file.filename)
+            file.save(file_path)
 
-    # Get the text from the request
-    data = request.get_json(force=True)
-    text = data["text"]
+            # Read CSV file
+            df = pd.read_csv(file_path)
+            
+            if 'review' not in df.columns:
+                return jsonify({'error': 'CSV file must contain "review" column'}), 400
 
-    # Predict
-    result = triplet_extractor.predict(text, save_result=False)
+            results = []
+            total_sentiments = 0
+            positive_sentiments = 0
 
-    return jsonify(result)
+            for review in df['review']:
+                result = triplet_extractor.predict(review, save_result=False)
+                aspects = result['aspect'] if 'aspect' in result else []
+                sentiments = result['sentiment'] if 'sentiment' in result else ['Neutral']
+
+                total_sentiments += len(sentiments)
+                positive_sentiments += sentiments.count('Positive')
+
+                results.append({'review': review, 'aspects': aspects, 'sentiments': sentiments})
+
+            positive_ratio = (positive_sentiments / total_sentiments) * 100 if total_sentiments > 0 else 0
+            return jsonify({'results': results, 'positive_ratio': positive_ratio})
 
 # @app.route('/analyze_sentiment', methods=['POST'])
 # def analyze_sentiment():
