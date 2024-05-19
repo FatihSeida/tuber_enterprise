@@ -126,7 +126,7 @@ def predict():
 
     # Load the serialized model based on the programming language
     logging.debug("Loading model for programming language %s", proglang)
-    model_path = os.path.join('models', proglang, f'{proglang}_model.pkl')
+    model_path = os.path.join(models_dir, proglang, f'{proglang}_model.pkl')
     logging.debug("Model path: %s", model_path)
     if not os.path.exists(model_path):
         return jsonify({'error': f'Model not found for programming language {proglang}'}), 404
