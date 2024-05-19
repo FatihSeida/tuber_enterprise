@@ -1,101 +1,71 @@
 {% extends "index.html" %}
-{% block title %}Project Management{% endblock %}
+{% block title %}Aspect Based Sentiment Analysis - Project Maintenance{% endblock %}
 {% block content %}
-<h3>Project Management Content</h3>
-<p>Welcome to the Project Management page!</p>
-
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Aspect Based Sentiment Analysis</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
         .Positive { color: green; }
         .Negative { color: red; }
         .Neutral { color: darkblue; }
         button { margin: 5px; }
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+            padding: 10px 20px; /* Padding kiri dan kanan 20px */
+            text-align: left;
+        }
     </style>
 </head>
 <body>
-    <h1>Aspect Based Sentiment Analysis</h1>
-    <input type="text" id="inputText" placeholder="Enter your text here...">
-    <button onclick="sendText()">Analyze Sentiment</button>
-    <div id="result"></div>
-
-    <button onclick="window.location.href='/aspect_based'">Aspect Based Sentiment Analysis</button>
-    <button onclick="window.location.href='/sentiment_analysis'">Sentiment Analysis</button>
-    <button onclick="window.location.href='/regression'">Regression</button>
-    <button onclick="window.location.href='/chatbot_page'">Chatbot</button>
-
-    <script>
-        function sendText() {
-            var text = $('#inputText').val();
-            $.ajax({
-                url: '/predict',  // Adjusted to correct endpoint if needed
-                method: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({ text: text }),
-                success: function(data) {
-                    $('#result').empty();  // Clear previous results
-                    data.sentiment.forEach(function(sentiment, index) {
-                        var aspect = data.aspect[index];
-                        var element = '<div class="' + sentiment + '">' + aspect + ': ' + sentiment + '</div>';
-                        $('#result').append(element);
-                    });
-                }
-            });
-        }
-    </script>
+    <div class="absa-content">
+        <h3>Aspect Based Sentiment Analysis - Project Maintenance</h3>
+    
+        <form id="upload-form" enctype="multipart/form-data">
+            <input type="file" id="csvFile" name="csvFile" accept=".csv">
+            <button type="button" onclick="uploadFile()">Upload and Analyze</button>
+        </form>
+        <div id="result"></div>
+        <div id="positiveRatio"></div>
+    
+        <script>
+            function uploadFile() {
+                var formData = new FormData();
+                var file = $('#csvFile')[0].files[0];
+                formData.append('csvFile', file);
+    
+                $.ajax({
+                    url: '/upload_csv',
+                    method: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function(data) {
+                        $('#result').empty();  // Clear previous results
+                        var table = '<table><thead><tr><th>Review</th><th>Sentiments</th></tr></thead><tbody>';
+                        var positiveCount = 0;
+    
+                        data.results.forEach(function(row) {
+                            var sentimentDetails = row.sentiments.map((sentiment, index) => 
+                                row.aspects[index] + ': <span class="' + sentiment + '">' + sentiment + '</span>'
+                            ).join(', ');
+                            table += '<tr><td>' + row.review + '</td><td>' + sentimentDetails + '</td></tr>';
+                            if (row.sentiments.includes('Positive')) {
+                                positiveCount++;
+                            }
+                        });
+    
+                        table += '</tbody></table>';
+                        $('#result').html(table);
+    
+                        var positiveRatio = (positiveCount / data.results.length) * 100;
+                        $('#positiveRatio').html('Positive Sentiment Ratio: ' + positiveRatio.toFixed(2) + '%');
+                    }
+                });
+            }
+        </script>
+    </div>
 </body>
 </html>
-
-<div class="container mt-5">
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Project</th>
-                <th>Name</th>
-                <th>Title</th>
-                <th>Acceptance Criteria</th>
-                <th>Priority</th>
-                <th>PIC</th>
-                <th>% Done</th>
-                <th>Dev Flow</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>F1C1 - EOD 01</td>
-                <td>BL19 - EOD 01 Pre EOD Checking</td>
-                <td>EOD 01 Pre EOD Checking</td>
-                <td>batchprocess/Pre_EOD.py</td>
-                <td><span class="priority-critical">Critical</span></td>
-                <td><span class="icon-info">i</span> ikhsan.fanani</td>
-                <td>90%</td>
-                <td><span class="status-in-progress">2In Progress</span></td>
-            </tr>
-            <tr>
-                <td>F1C1 - EOD 01</td>
-                <td>BL20 - EOD 03 CREATE DAILY PORTO</td>
-                <td>EOD 03 CREATE DAILY PORTO</td>
-                <td>batchprocess/EOD_CreateDailyPorto.py</td>
-                <td><span class="priority-critical">Critical</span></td>
-                <td><span class="icon-info">i</span> ikhsan.fanani</td>
-                <td>15%</td>
-                <td><span class="status-in-progress">2In Progress</span></td>
-            </tr>
-            <tr>
-                <td>F1C1 - EOD 01</td>
-                <td>BL21 - EOD 04 JURNAL APPROVAL H+0 NON REDEEM</td>
-                <td>EOD 04 JURNAL APPROVAL H+0 NON REDEEM</td>
-                <td>batchprocess/EOD_CreateGroupJournal_Transact_Non_Redeem.py</td>
-                <td><span class="priority-critical">Critical</span></td>
-                <td><span class="icon-info">i</span> ikhsan.fanani</td>
-                <td>10%</td>
-                <td><span class="status-in-progress">2In Progress</span></td>
-            </tr>
-        </tbody>
-    </table>
-</div>
-
 {% endblock %}

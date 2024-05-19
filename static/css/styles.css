@@ -320,3 +320,22 @@ body, html {
     border-radius: 5px;
     margin-bottom: 10px;
 }
+
+/* Tambahan padding kiri dan kanan untuk ABSA */
+.absa-content {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+/* Jika diperlukan, tambahkan style lain khusus untuk ABSA */
+.absa-header {
+    padding: 10px 20px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.effort-estimator-container {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
